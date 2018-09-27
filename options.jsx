@@ -14,6 +14,7 @@ const actions = {
   save: () => async (state, actions) => {
     const items = await Promise.all(state.items.map(search))
     chrome.storage.sync.set({ items }, () => actions.updateItems(items))
+    sbe.updateLinks()
   },
   updateItems: items => ({ items }),
   remove: index => state => ({
@@ -35,37 +36,38 @@ const actions = {
 const Field = ({ label: _label, value, update, name, valid }) => {
   const updateFn = e => update({ field: name, value: e.target.value })
 
-  return div({ class: 'field' }, [
-    label({ class: 'label' }, _label),
-    div({ class: 'control' }, [
-      input({
-        class: `input ${!valid && 'is-danger'}`,
-        name,
-        type: 'text',
-        value,
-        onchange: updateFn,
-        onkeyup: updateFn
-      })
-    ])
-  ])
+  return (
+    <div class="field">
+      <label class="label">{_label}</label>
+      <div class="control">
+        <input
+          class={`input ${!valid && 'is-danger'}`}
+          type="text"
+          name={name}
+          value={value}
+          onchange={updateFn}
+          onkeyup={updateFn}
+        />
+      </div>
+    </div>
+  )
 }
 
 const Item = ({ folder, url, validFolder, index, updateField, remove }) => {
   const update = ({ field, value }) => updateField({ index, field, value })
   return [
-    hr(),
-    Field({
-      label: 'Bookmark folder',
-      name: 'folder',
-      value: folder,
-      update,
-      valid: validFolder
-    }),
-    Field({ label: 'URL asd ', name: 'url', value: url, update, valid: true }),
-    button(
-      { class: 'button is-danger', onclick: () => remove(index) },
-      'Remove'
-    )
+    <hr />,
+    <Field
+      label="Bookmark folder"
+      name="folder"
+      value={folder}
+      update={update}
+      valid={validFolder}
+    />,
+    <Field label="URL" name="url" value={url} update={update} valid={true} />,
+    <button class="button is-danger" onclick={() => remove(index)}>
+      Remove
+    </button>
   ]
 }
 
@@ -77,23 +79,27 @@ const Control = ({ label, action }) => (
   </div>
 )
 
-const view = (state, actions) =>
-  section({ class: 'section' }, [
-    div({ class: 'container' }, [
-      div({ class: 'field is-grouped' }, [
-        Control({ label: 'Save', action: actions.save }),
-        Control({ label: 'Add Item', action: actions.addItem })
-      ]),
-      state.items.map((item, i) =>
-        Item({
-          ...item,
-          updateField: actions.updateField,
-          remove: actions.remove,
-          index: i
-        })
-      )
-    ])
-  ])
+const view = (state, actions) => {
+  const items = state.items.map((item, index) => (
+    <Item
+      {...{ ...item, index }}
+      updateField={actions.updateField}
+      remove={actions.remove}
+    />
+  ))
+
+  return (
+    <section class="section">
+      <div class="container">
+        <div class="field is-grouped">
+          <Control label="Save" action={actions.save} />
+          <Control label="Add item" action={actions.addItem} />
+        </div>
+        {items}
+      </div>
+    </section>
+  )
+}
 
 chrome.storage.sync.get(null, state =>
   app(state.items ? state : { items: [] }, actions, view, document.body)

@@ -6,7 +6,7 @@
     "bookmarks", "declarativeContent", "storage"
   ],
   "background": {
-    "scripts": ["background.js"],
+    "scripts": ["lib.js","background.js"],
     "persistent": false
   },
   "options_page": "options.html",
