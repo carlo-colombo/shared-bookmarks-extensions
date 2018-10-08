@@ -1,5 +1,4 @@
-const { h, app } = hyperapp,
-  { p, section, div, input, form, button, label, hr } = hyperappHtml
+const { h, app } = hyperapp
 
 function search(item) {
   return new Promise(resolve =>

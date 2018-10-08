@@ -3,22 +3,16 @@
   "version": "1.0.0",
   "description": "",
   "main": "background.js",
-  "watch": {
-    "babel": {
-      "extensions": "jsx",
-      "patterns": ["*"]
-    }
-  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "babel *.jsx --out-dir build --source-maps inline --watch"
+    "watch": "babel *.js *.jsx --out-dir build --source-maps inline --watch",
+    "build": "./scripts/build.sh"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/carlo-colombo/shared-bookmarks-extensions.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/carlo-colombo/shared-bookmarks-extensions/issues"
   },
@@ -26,11 +20,8 @@
   "devDependencies": {
     "@babel/cli": "^7.1.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
-    "@babel/preset-env": "^7.1.0",
     "@babel/preset-react": "^7.0.0",
-    "nodemon": "^1.18.4",
-    "@babel/core": "^7.1.0",
-    "npm-watch": "^0.4.0"
+    "@babel/core": "^7.1.0"
   },
   "dependencies": {
   }
